@@ -1,4 +1,5 @@
 import os
+import csv
 
 import numpy as np
 from imageio import imread
@@ -86,8 +87,10 @@ def example_tem():
 
 if __name__ == '__main__':
 
-    PATH_IMG_TEM = Path('../images/8.tif')
-
+    PATH_IMG_TEM = Path('../images/2.tif')
+    PATH_CONTOUR_CSV = Path('./contour_curvature_output').joinpath(PATH_IMG_TEM.stem+'.csv')
+    if not PATH_CONTOUR_CSV.parent.exists():
+        PATH_CONTOUR_CSV.parent.mkdir()
     # Global variable to store coordinates of contour points
     global img_contour
     img_contour = []
@@ -102,6 +105,11 @@ if __name__ == '__main__':
     y_smooth = smooth(y, 30)
 
     curvature = cal_curvature(x_smooth, y_smooth, interval=30)
+
+    with open(PATH_CONTOUR_CSV, 'w', newline='') as f:
+        writer = csv.writer(f)
+        writer.writerows(zip(x_smooth, y_smooth, curvature))
+
     curvature_sorted = sorted(curvature)
     # curvature_min = curvature_sorted[int(0.2*len(curvature))]
     # curvature_max = curvature_sorted[-int(0.2*len(curvature))]   
