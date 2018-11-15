@@ -3,3 +3,5 @@ __pycache__/*
 */__pycache__/*
 */.vscode/*
 images/*
+contour_curvature_output/*
+*.csv
