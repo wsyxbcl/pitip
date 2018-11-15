@@ -73,20 +73,20 @@ def example_tem():
     img = rgb2gray(imgcolor)
     
     # Initialization of the level-set.
-    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * 3.8 / 8.0)
+    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * 3.3 / 8.0)
     # Callback for visual plotting
     callback = visual_callback_2d(imgcolor)
 
     # Morphological Chan-Vese
-    ms.morphological_chan_vese(img, iterations=50,
+    ms.morphological_chan_vese(img, iterations=100,
                                init_level_set=init_ls,
-                               smoothing=3, lambda1=1, lambda2=7.5,
+                               smoothing=3, lambda1=1, lambda2=5,
                                iter_callback=callback)
 
 
 if __name__ == '__main__':
 
-    PATH_IMG_TEM = Path('../images/tem1.tif')
+    PATH_IMG_TEM = Path('../images/8.tif')
 
     # Global variable to store coordinates of contour points
     global img_contour
@@ -98,15 +98,15 @@ if __name__ == '__main__':
     # Calculate the curvature
     x = img_contour[:, 0]
     y = img_contour[:, 1]
-    x_smooth = smooth(x, 100)
-    y_smooth = smooth(y, 100)
+    x_smooth = smooth(x, 30)
+    y_smooth = smooth(y, 30)
 
-    curvature = cal_curvature(x_smooth, y_smooth, interval=50)
+    curvature = cal_curvature(x_smooth, y_smooth, interval=30)
     curvature_sorted = sorted(curvature)
     # curvature_min = curvature_sorted[int(0.2*len(curvature))]
     # curvature_max = curvature_sorted[-int(0.2*len(curvature))]   
     curvature_min = curvature_sorted[0]
-    curvature_max = curvature_sorted[-1]   
+    curvature_max = curvature_sorted[-1]
 
     # Plot and color mapping
     colormap = plt.get_cmap('jet')
@@ -114,12 +114,19 @@ if __name__ == '__main__':
     scalar_map = matplotlib.cm.ScalarMappable(norm=color_norm, cmap=colormap)
     scalar_map.set_array(curvature)
 
-    fig = plt.figure()
     imgcolor = imread(str(PATH_IMG_TEM))/255.0
     img = rgb2gray(imgcolor)
-    ax = fig.add_subplot(1, 1, 1)
-    ax.imshow(img, cmap=plt.cm.gray)
-    ax.scatter(x, y, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+    
+    plt.close()
+    plt.subplot(121)
+    plt.imshow(img, cmap=plt.cm.gray)
+    plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+    # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
+    plt.colorbar(scalar_map)
+
+    plt.subplot(122)
+    plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+    plt.gca().invert_yaxis() # flip y axis
     # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
     plt.colorbar(scalar_map)
     plt.show()
