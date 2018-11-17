@@ -26,7 +26,7 @@ if __name__ == '__main__':
     y_all = []
     curvature_all = []
     for filename, subdir in walker(working_directory, pattern):
-        print(filename)
+        print("Adding "+filename)
         with open(Path(subdir).joinpath(Path(filename))) as f:
             reader = csv.reader(f)
             contour_curvature = np.array(list(reader)).astype(np.float)
