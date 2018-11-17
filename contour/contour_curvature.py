@@ -68,26 +68,10 @@ def smooth(x, kernel_size):
     x_smooth = convolve(x, kernel, mode='wrap')
     return x_smooth
 
-def example_tem():
-    # Load the image.
-    imgcolor = imread(str(PATH_IMG_TEM))/255.0
-    img = rgb2gray(imgcolor)
-    
-    # Initialization of the level-set.
-    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * 3.3 / 8.0)
-    # Callback for visual plotting
-    callback = visual_callback_2d(imgcolor)
-
-    # Morphological Chan-Vese
-    ms.morphological_chan_vese(img, iterations=100,
-                               init_level_set=init_ls,
-                               smoothing=3, lambda1=1, lambda2=5,
-                               iter_callback=callback)
-
 
 if __name__ == '__main__':
 
-    PATH_IMG_TEM = Path('../images/2.tif')
+    PATH_IMG_TEM = Path('../images/edge.tif')
     PATH_CONTOUR_CSV = Path('./contour_curvature_output').joinpath(PATH_IMG_TEM.stem+'.csv')
     if not PATH_CONTOUR_CSV.parent.exists():
         PATH_CONTOUR_CSV.parent.mkdir()
@@ -95,46 +79,80 @@ if __name__ == '__main__':
     global img_contour
     img_contour = []
 
-    example_tem()
-    # plt.show()
-    
-    # Calculate the curvature
-    x = img_contour[:, 0]
-    y = img_contour[:, 1]
-    x_smooth = smooth(x, 30)
-    y_smooth = smooth(y, 30)
-
-    curvature = cal_curvature(x_smooth, y_smooth, interval=30)
-
-    with open(PATH_CONTOUR_CSV, 'w', newline='') as f:
-        writer = csv.writer(f)
-        writer.writerows(zip(x_smooth, y_smooth, curvature))
-
-    curvature_sorted = sorted(curvature)
-    # curvature_min = curvature_sorted[int(0.2*len(curvature))]
-    # curvature_max = curvature_sorted[-int(0.2*len(curvature))]   
-    curvature_min = curvature_sorted[0]
-    curvature_max = curvature_sorted[-1]
-
-    # Plot and color mapping
-    colormap = plt.get_cmap('jet')
-    color_norm = matplotlib.colors.Normalize(vmin=curvature_min, vmax=curvature_max)
-    scalar_map = matplotlib.cm.ScalarMappable(norm=color_norm, cmap=colormap)
-    scalar_map.set_array(curvature)
-
+    # Load the image.
     imgcolor = imread(str(PATH_IMG_TEM))/255.0
     img = rgb2gray(imgcolor)
     
-    plt.close()
-    plt.subplot(121)
-    plt.imshow(img, cmap=plt.cm.gray)
-    plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
-    # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
-    plt.colorbar(scalar_map)
+    # Initialization of the level-set.
+    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * 0.5 / 8.0)
+    # Callback for visual plotting
+    callback = visual_callback_2d(imgcolor)
 
-    plt.subplot(122)
-    plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
-    plt.gca().invert_yaxis() # flip y axis
-    # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
-    plt.colorbar(scalar_map)
-    plt.show()
+    # Morphological Chan-Vese
+    ms.morphological_chan_vese(img, iterations=250,
+                               init_level_set=init_ls,
+                               smoothing=3, lambda1=1, lambda2=5,
+                               iter_callback=callback)
+    # ms.morphological_chan_vese(img, iterations=50,
+    #                            smoothing=3, lambda1=1, lambda2=5,
+    #                            iter_callback=callback)
+
+
+    # plt.show()
+
+    # As kernel_size(in smooth) and interval(in curvature calculation) are set mannually
+    while True:
+        # Contour Smooth
+        try:
+            kernel_size = int(input("Kernel size\n> ")) 
+            x = img_contour[:, 0]
+            y = img_contour[:, 1]
+            x_smooth = smooth(x, kernel_size=kernel_size)
+            y_smooth = smooth(y, kernel_size=kernel_size)
+            # Curvature calculation
+            interval = int(input("Point interval\n> "))
+
+            curvature = cal_curvature(x_smooth, y_smooth, cyc=1, interval=interval)
+
+            with open(PATH_CONTOUR_CSV, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerows(zip(x_smooth, y_smooth, curvature))
+
+            curvature_sorted = sorted(curvature)
+            # Stupid idea...
+            # curvature_min = curvature_sorted[int(0.2*len(curvature))]
+            # curvature_max = curvature_sorted[-int(0.2*len(curvature))]   
+            curvature_min = curvature_sorted[0]
+            curvature_max = curvature_sorted[-1]
+
+            # Plot and color mapping
+            colormap = plt.get_cmap('jet')
+            color_norm = matplotlib.colors.Normalize(vmin=curvature_min, vmax=curvature_max)
+            scalar_map = matplotlib.cm.ScalarMappable(norm=color_norm, cmap=colormap)
+            scalar_map.set_array(curvature)
+
+            imgcolor = imread(str(PATH_IMG_TEM))/255.0
+            img = rgb2gray(imgcolor)
+            
+            plt.close()
+            plt.subplot(121)
+            plt.imshow(img, cmap=plt.cm.gray)
+            plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+            # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
+            plt.colorbar(scalar_map)
+
+            plt.subplot(122)
+            plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+            plt.gca().invert_yaxis() # flip y axis
+            # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
+            plt.colorbar(scalar_map)
+            plt.show()
+            
+            if input("Command(q for quit): ").lower() == 'q':
+                break               
+        except ValueError:
+            print("Error: An integer is expected.")
+            continue
+        except EOFError:
+            break
+    print("Bye")
