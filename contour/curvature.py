@@ -64,6 +64,8 @@ def cal_curvature(x, y, cyc=1, interval=1, sign=1):
                                                  [x_hidx, y_hidx])
         except ValueError:
             cv.append(0.0)
+            continue
+            
         if s > 0:
             cv.append(1.0/-radius)
         else:
