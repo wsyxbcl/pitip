@@ -59,19 +59,51 @@ def rgb2gray(img):
     """
     return 0.2989 * img[..., 0] + 0.587 * img[..., 1] + 0.114 * img[..., 2]
 
-def smooth(x, kernel_size):
+def smooth(x, kernel_size, wrap=1):
     """
-    circular convolution(wrap mode) on 1d array to smooth the line
+    Convolution on 1d array to smooth the line
+
+    Args
+        x: 1d array
+        wraps: 0 or 1
+            When wrap == 1, wrap mode is used to do a circular convolution
+        kernel_size: integer
+            Kernel(or filter) size in convolution
     """
     kernel = np.ones(kernel_size)/kernel_size
     # x_smooth = np.convolve(x, kernel, mode='valid') # edge info lost
-    x_smooth = convolve(x, kernel, mode='wrap')
+    if wrap:
+        x_smooth = convolve(x, kernel, mode='wrap')
+    else:
+        x_smooth = np.convolve(x, kernel, mode='valid')
     return x_smooth
 
 
 if __name__ == '__main__':
 
-    PATH_IMG_TEM = Path('../images/edge.tif')
+    ################ SET YOUR PARAMETERS HERE ################
+    # Path for your image
+    PATH_IMG_TEM = Path('../images/6.tif')
+
+    # Morphsnake Algorithm
+    # size of the circle level_set (radius/min(img.shape))
+    circle_ratio = 0.1 # 0 ~ 0.5
+    # time of iterations
+    iterations = 150
+    # weight parameters
+        # If 'lambda1' is larger than 'lambda2', the outer
+        # region will contain a larger range of values than
+        # the inner region.(Vice versa)
+    lambda1 = 4
+    lambda2 = 5
+
+    # Convolve & Calculate Curvature
+    # whether the contour is cyclic
+    cyclic_contour = 0 # 0 or 1
+    # kernel_size(in smooth) and interval(in curvature calculation) 
+    # are set later in terminal
+    ##########################################################
+
     PATH_CONTOUR_CSV = Path('./contour_curvature_output').joinpath(PATH_IMG_TEM.stem+'.csv')
     if not PATH_CONTOUR_CSV.parent.exists():
         PATH_CONTOUR_CSV.parent.mkdir()
@@ -84,35 +116,32 @@ if __name__ == '__main__':
     img = rgb2gray(imgcolor)
     
     # Initialization of the level-set.
-    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * 0.5 / 8.0)
+    init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * circle_ratio)
     # Callback for visual plotting
     callback = visual_callback_2d(imgcolor)
 
     # Morphological Chan-Vese
-    ms.morphological_chan_vese(img, iterations=250,
+    ms.morphological_chan_vese(img, iterations=iterations,
                                init_level_set=init_ls,
-                               smoothing=3, lambda1=1, lambda2=5,
+                               smoothing=3, lambda1=lambda1, lambda2=lambda2,
                                iter_callback=callback)
-    # ms.morphological_chan_vese(img, iterations=50,
-    #                            smoothing=3, lambda1=1, lambda2=5,
-    #                            iter_callback=callback)
 
 
-    # plt.show()
-
-    # As kernel_size(in smooth) and interval(in curvature calculation) are set mannually
+    # Try kernel_size(in smooth) and interval(in curvature calculation)
     while True:
         # Contour Smooth
         try:
+            if input("Command(Press enter to continue, q for quit): ").lower() == 'q':
+                break
             kernel_size = int(input("Kernel size\n> ")) 
             x = img_contour[:, 0]
             y = img_contour[:, 1]
-            x_smooth = smooth(x, kernel_size=kernel_size)
-            y_smooth = smooth(y, kernel_size=kernel_size)
+            x_smooth = smooth(x, kernel_size=kernel_size, wrap=cyclic_contour)
+            y_smooth = smooth(y, kernel_size=kernel_size, wrap=cyclic_contour)
             # Curvature calculation
             interval = int(input("Point interval\n> "))
 
-            curvature = cal_curvature(x_smooth, y_smooth, cyc=1, interval=interval)
+            curvature = cal_curvature(x_smooth, y_smooth, cyc=cyclic_contour, interval=interval)
 
             with open(PATH_CONTOUR_CSV, 'w', newline='') as f:
                 writer = csv.writer(f)
@@ -147,9 +176,7 @@ if __name__ == '__main__':
             # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
             plt.colorbar(scalar_map)
             plt.show()
-            
-            if input("Command(q for quit): ").lower() == 'q':
-                break               
+         
         except ValueError:
             print("Error: An integer is expected.")
             continue
