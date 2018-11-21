@@ -6,7 +6,10 @@ PITIP is a TEM image processor
 
 Detect the contour of the aimed object and colormap the curvature of each point on the contour.  
 
-Thanks to [morphsnakes](https://github.com/pmneila/morphsnakes), the contour is well dectected using *Morphological Snakes* [1][2] method. After smoothing the contour with a average convolution, we calculate the [curvature](https://en.wikipedia.org/wiki/Curvature) of the contour by fitting a circle to a point and the two points that are several points away from it[3]. 
+Thanks to [morphsnakes](https://github.com/pmneila/morphsnakes), the contour is well dectected using *Morphological Snakes* [1][2] method. After smoothing the contour with an average convolution, we calculate the [curvature](https://en.wikipedia.org/wiki/Curvature) of the contour by fitting a circle to a point and the two points that are several points away from it[3]. 
+
+![futaba_contour](/images/futaba_rio.gif)
+![futaba_cv](/images/futaba_rio_cv.png)
 
 ## References
 
