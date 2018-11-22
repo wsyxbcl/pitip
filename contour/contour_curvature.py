@@ -97,7 +97,7 @@ if __name__ == '__main__':
         # the inner region.(Vice versa)
     lambda1 = 1
     lambda2 = 1
-    smoothing = 1 # 1, 2 or 3
+    smoothing = 1 # int, reasonably 1~4
 
     # Convolve & Calculate Curvature
     # whether the contour is cyclic
