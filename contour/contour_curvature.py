@@ -2,6 +2,7 @@ import os
 import csv
 
 import numpy as np
+import time
 from imageio import imread
 from scipy.ndimage import convolve
 import matplotlib
@@ -83,28 +84,28 @@ if __name__ == '__main__':
 
     ################ SET YOUR PARAMETERS HERE ################
     # Path for your image
-    PATH_IMG_TEM = Path('../images/6.tif')
+    PATH_IMG_TEM = Path('../images/futaba.png')
 
     # Morphsnake Algorithm
     # size of the circle level_set (radius/min(img.shape))
-    circle_ratio = 0.1 # 0 ~ 0.5
+    circle_ratio = 0.49 # 0 ~ 0.5
     # time of iterations
-    iterations = 150
+    iterations = 300
     # weight parameters
         # If 'lambda1' is larger than 'lambda2', the outer
         # region will contain a larger range of values than
         # the inner region.(Vice versa)
-    lambda1 = 4
-    lambda2 = 5
+    lambda1 = 1
+    lambda2 = 1
+    smoothing = 1 # 1, 2 or 3
 
     # Convolve & Calculate Curvature
     # whether the contour is cyclic
-    cyclic_contour = 0 # 0 or 1
+    cyclic_contour = 1 # 0 or 1
     # kernel_size(in smooth) and interval(in curvature calculation) 
     # are set later in terminal
     ##########################################################
-
-    PATH_CONTOUR_CSV = Path('./contour_curvature_output').joinpath(PATH_IMG_TEM.stem+'.csv')
+    PATH_CONTOUR_CSV = Path('./output_contour_cv').joinpath(PATH_IMG_TEM.stem+'.csv')
     if not PATH_CONTOUR_CSV.parent.exists():
         PATH_CONTOUR_CSV.parent.mkdir()
     # Global variable to store coordinates of contour points
@@ -123,8 +124,12 @@ if __name__ == '__main__':
     # Morphological Chan-Vese
     ms.morphological_chan_vese(img, iterations=iterations,
                                init_level_set=init_ls,
-                               smoothing=3, lambda1=lambda1, lambda2=lambda2,
+                               smoothing=smoothing, lambda1=lambda1, lambda2=lambda2,
                                iter_callback=callback)
+
+    # ms.morphological_chan_vese(img, iterations=iterations,
+    #                            smoothing=3, lambda1=lambda1, lambda2=lambda2,
+    #                            iter_callback=callback)
 
 
     # Try kernel_size(in smooth) and interval(in curvature calculation)
@@ -164,17 +169,17 @@ if __name__ == '__main__':
             img = rgb2gray(imgcolor)
             
             plt.close()
-            plt.subplot(121)
+            plt.subplot(111)
             plt.imshow(img, cmap=plt.cm.gray)
             plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
             # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
             plt.colorbar(scalar_map)
 
-            plt.subplot(122)
-            plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
-            plt.gca().invert_yaxis() # flip y axis
-            # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
-            plt.colorbar(scalar_map)
+            # plt.subplot(122)
+            # plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
+            # plt.gca().invert_yaxis() # flip y axis
+           # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
+            # plt.colorbar(scalar_map)
             plt.show()
          
         except ValueError:
