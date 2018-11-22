@@ -10,7 +10,7 @@ Thanks to [morphsnakes](https://github.com/pmneila/morphsnakes), the contour is 
 
 A demo ->
 <img src="/images/futaba_rio.gif" height="250">
-<img src="/images/futaba_rio_cv.png" height="250">
+<img src="/images/futaba_rio_cv.png" height="260">
 
 ## References
 
