@@ -8,7 +8,7 @@ Detect the contour of the aimed object and colormap the curvature of each point 
 
 Thanks to [morphsnakes](https://github.com/pmneila/morphsnakes), the contour is well dectected using *Morphological Snakes* [1][2] method. After smoothing the contour with an average convolution, we calculate the [curvature](https://en.wikipedia.org/wiki/Curvature) of the contour by fitting a circle to a point and the two points that are several points away from it[3]. 
 
-A demo ->
+A demo ->  
 <img src="/images/futaba_rio.gif" height="300">
 <img src="/images/futaba_rio_cv.png" height="298">
 
