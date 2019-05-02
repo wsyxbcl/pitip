@@ -1,6 +1,6 @@
 # pitip
 
-PITIP is a TEM image processor  
+PITIP is a TEM image processor (Under construction)
 
 ## Contour
 
