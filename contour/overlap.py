@@ -57,5 +57,6 @@ if __name__ == '__main__':
         scalar_map.set_array(curvature_all[i])
         plt.scatter(x_all[i], y_all[i], c=scalar_map.to_rgba(curvature_all[i]), marker='.', s=10)
     plt.gca().invert_yaxis() 
+    plt.axis('equal')
     plt.colorbar(scalar_map)
     plt.show()

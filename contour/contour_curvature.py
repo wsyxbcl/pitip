@@ -44,6 +44,7 @@ def visual_callback_2d(background, fig=None):
         fig = plt.figure()
     fig.clf()
     ax = fig.add_subplot(1, 1, 1)
+    plt.axis('equal')
     ax.imshow(background, cmap=plt.cm.gray)
 
     def callback(levelset):
@@ -180,6 +181,7 @@ if __name__ == '__main__':
             
             plt.close()
             plt.subplot(111)
+            plt.axis('equal')
             plt.imshow(img, cmap=plt.cm.gray)
             plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
             # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
