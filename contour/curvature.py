@@ -40,20 +40,24 @@ def cal_curvature(x, y, cyc=1, interval=1, sign=1):
     """
     cv = []
     for i in range(len(x)):
-        if cyc:
-            x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[(i+interval)%len(x)]
-            y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[(i+interval)%len(y)]
-        else:
-            if i - interval < 0:
-                x_midx, x_lidx, x_hidx = x[i], x[i], x[i+interval]
-                y_midx, y_lidx, y_hidx = y[i], y[i], y[i+interval]
-            elif i + interval > (len(x) - 1):
-                x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[i]
-                y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[i]
+        try: 
+            if cyc:
+                x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[(i+interval)%len(x)]
+                y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[(i+interval)%len(y)]
             else:
-                x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[i+interval]
-                y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[i+interval]    
-
+                if i - interval < 0:
+                    x_midx, x_lidx, x_hidx = x[i], x[i], x[i+interval]
+                    y_midx, y_lidx, y_hidx = y[i], y[i], y[i+interval]
+                elif i + interval > (len(x) - 1):
+                    x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[i]
+                    y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[i]
+                else:
+                    x_midx, x_lidx, x_hidx = x[i], x[i-interval], x[i+interval]
+                    y_midx, y_lidx, y_hidx = y[i], y[i-interval], y[i+interval]    
+        except IndexError:
+            print("interval value too large for the number of points")
+            raise
+            
         if sign:
             s = (x_lidx - x_midx) * (y_hidx - y_midx) - (y_lidx - y_midx) * (x_hidx - x_midx)
         else:
