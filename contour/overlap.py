@@ -1,3 +1,7 @@
+# plot the overlap of all the contour & curvature in 
+# the given directory.
+
+import argparse
 import csv
 import sys
 import os
@@ -21,7 +25,11 @@ def walker(rootdir, pattern = re.compile('.*?')):
 
 
 if __name__ == '__main__':
-    working_directory = Path('./output_contour_cv')
+    parser = argparse.ArgumentParser()
+    parser.add_argument("contour_dir", type=Path, 
+                        help="Directory that contains the contours & curvatures")
+    args = parser.parse_args()
+    working_directory = args.contour_dir
     pattern=re.compile('.*?csv$')
     x_all = []
     y_all = []
