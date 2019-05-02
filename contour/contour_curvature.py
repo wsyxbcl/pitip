@@ -2,6 +2,7 @@
 
 import argparse
 import os
+import sys
 import csv
 
 import numpy as np
@@ -118,7 +119,11 @@ if __name__ == '__main__':
     img_contour = []
 
     # Load the image.
-    imgcolor = imread(str(PATH_IMG_TEM))/255.0
+    try:
+        imgcolor = imread(str(PATH_IMG_TEM))/255.0
+    except FileNotFoundError:
+        print("No such file, please check.")
+        sys.exit()
     img = rgb2gray(imgcolor)
     
     # Initialization of the level-set.
