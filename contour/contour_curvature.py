@@ -1,3 +1,4 @@
+import argparse
 import os
 import csv
 
@@ -81,11 +82,12 @@ def smooth(x, kernel_size, wrap=1):
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser()
+    parser.add_argument("image_dir", type=Path, help="Path to your aimed image")
+    args = parser.parse_args()
+    PATH_IMG_TEM = args.image_dir
 
-    ################ SET YOUR PARAMETERS HERE ################
-    # Path for your image
-    PATH_IMG_TEM = Path('../images/futaba.png')
-
+    ################ Parameters for contour detection ################
     # Morphsnake Algorithm
     # size of the circle level_set (radius/min(img.shape))
     circle_ratio = 0.49 # 0 ~ 0.5
@@ -96,7 +98,7 @@ if __name__ == '__main__':
         # region will contain a larger range of values than
         # the inner region.(Vice versa)
     lambda1 = 1
-    lambda2 = 1
+    lambda2 = 1 
     smoothing = 1 # int, reasonably 1~4
 
     # Convolve & Calculate Curvature
@@ -104,7 +106,8 @@ if __name__ == '__main__':
     cyclic_contour = 1 # 0 or 1
     # kernel_size(in smooth) and interval(in curvature calculation) 
     # are set later in terminal
-    ##########################################################
+    #################################################################
+
     PATH_CONTOUR_CSV = Path('./output_contour_cv').joinpath(PATH_IMG_TEM.stem+'.csv')
     if not PATH_CONTOUR_CSV.parent.exists():
         PATH_CONTOUR_CSV.parent.mkdir()
@@ -178,7 +181,7 @@ if __name__ == '__main__':
             # plt.subplot(122)
             # plt.scatter(x_smooth, y_smooth, c=scalar_map.to_rgba(curvature), marker='.', s=10)
             # plt.gca().invert_yaxis() # flip y axis
-           # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
+            # ax.plot(x, y, c=scalar_map.to_rgba(curvature))
             # plt.colorbar(scalar_map)
             plt.show()
          
