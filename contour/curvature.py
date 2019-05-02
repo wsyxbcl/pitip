@@ -31,7 +31,8 @@ def cal_curvature(x, y, cyc=1, interval=1, sign=1):
     Args
         x, y: lists that contains coordinates of points on the curve
         cyc: cyc=1 if the curve in in a cyclic form
-        interval: number of points between the middle point and the other two points
+        interval: number of points away from the middle point and the other two points
+                  for example, interval = 2 -> . . . x . x . x . . .   
         sign: whether to distinguish the sign of the curvature
         
     Returns
