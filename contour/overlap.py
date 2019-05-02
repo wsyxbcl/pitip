@@ -20,7 +20,7 @@ def walker(rootdir, pattern = re.compile('.*?')):
 
 
 if __name__ == '__main__':
-    working_directory = Path('./contour_curvature_output')
+    working_directory = Path('./output_contour_cv')
     pattern=re.compile('.*?csv$')
     x_all = []
     y_all = []
