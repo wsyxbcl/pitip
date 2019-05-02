@@ -1,4 +1,5 @@
 import csv
+import sys
 import os
 import re
 
@@ -33,9 +34,11 @@ if __name__ == '__main__':
             x_all.append(contour_curvature[:, 0].tolist())
             y_all.append(contour_curvature[:, 1].tolist())
             curvature_all.append(contour_curvature[:, 2].tolist())
-
-    curvature_max = max([max(cv) for cv in curvature_all])
-    curvature_min = min([min(cv) for cv in curvature_all])
+    try:
+        curvature_max = max([max(cv) for cv in curvature_all])
+        curvature_min = min([min(cv) for cv in curvature_all])
+    except ValueError:
+        sys.exit("Can't find contour & curvature data in given directory.")
 
     # Plot and color mapping
     colormap = plt.get_cmap('jet')
