@@ -102,7 +102,7 @@ if __name__ == '__main__':
         # region will contain a larger range of values than
         # the inner region.(Vice versa)
     lambda1 = 1
-    lambda2 = 1 
+    lambda2 = 1
     smoothing = 1 # int, reasonably 1~4
 
     # Convolve & Calculate Curvature
@@ -179,9 +179,6 @@ if __name__ == '__main__':
             color_norm = matplotlib.colors.Normalize(vmin=curvature_min, vmax=curvature_max)
             scalar_map = matplotlib.cm.ScalarMappable(norm=color_norm, cmap=colormap)
             scalar_map.set_array(curvature)
-
-            imgcolor = imread(str(PATH_IMG_TEM))/255.0
-            img = rgb2gray(imgcolor)
             
             plt.close()
             plt.subplot(111)
