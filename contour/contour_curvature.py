@@ -125,7 +125,11 @@ if __name__ == '__main__':
     except FileNotFoundError:
         print("No such file, please check.")
         sys.exit()
-    img = rgb2gray(imgcolor)
+    
+    if imgcolor.ndim != 2:
+        img = rgb2gray(imgcolor)
+    else:
+        img = imgcolor
     
     # Initialization of the level-set.
     init_ls = ms.circle_level_set(img.shape, radius=min(img.shape) * circle_ratio)
