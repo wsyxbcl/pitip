@@ -40,7 +40,7 @@ params.maxThreshold = 200
 detector = cv2.SimpleBlobDetector_create(params)
 
 # Detect blobs.
-keypoints = detector.detect(img)
+keypoints = detector.detect(img_denoise)
 
 # Draw detected blobs as red circles.
 # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
