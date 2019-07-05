@@ -15,7 +15,7 @@ def distance_calc(points):
         distance[:, i] = np.linalg.norm((points - point), axis=1)
     return distance
 
-def distance_vis(points, index_matrix=_no_value):
+def distance_vis(points, index_matrix=_no_value, axes=_no_value):
     """
     Visualize distances between points by connecting them with line.
     An Index Matrix is given to filter out unwanted distances.
@@ -25,9 +25,14 @@ def distance_vis(points, index_matrix=_no_value):
     if index_matrix is _no_value:
         index_matrix = np.tril(np.ones((n, n), dtype=int), -1)
     targets = np.where(index_matrix == 1)
-    for i, first_idx in enumerate(targets[0]):
-        plt.plot((points[first_idx][0], points[targets[1][i]][0]), 
-                 (points[first_idx][1], points[targets[1][i]][1]), '-r')
+    if axes is _no_value:
+        for i, first_idx in enumerate(targets[0]):
+            plt.plot((points[first_idx][0], points[targets[1][i]][0]), 
+                     (points[first_idx][1], points[targets[1][i]][1]), '-r')
+    else:
+        for i, first_idx in enumerate(targets[0]):
+            axes.plot((points[first_idx][0], points[targets[1][i]][0]), 
+                      (points[first_idx][1], points[targets[1][i]][1]), '-r')        
     # plt.show()
 
 
