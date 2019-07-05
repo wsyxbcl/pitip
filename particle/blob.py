@@ -9,7 +9,7 @@ from distance import *
 
 # Read image
 # img = cv2.imread("../images/particles1.jpg", 0)
-img = cv2.imread("../images/40000_crop.jpeg", 0)
+img = cv2.imread("../images/40000.jpeg", 0)
 
 # Denoising
 img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21) # Mean denoising
@@ -54,7 +54,7 @@ plt.hist(np.ravel(distances))
 plt.show()
 # distance filter
 n = np.shape(keypoints_coords)[0]
-cutoff_distance = 50
+cutoff_distance = 60
 distance_filter = (distances <= cutoff_distance)
 index_matrix = distance_filter * np.tril(np.ones((n, n), dtype=int), -1)
 
@@ -77,8 +77,8 @@ axes[1, 0].imshow(im_with_keypoints)
 
 axes[1, 1].title.set_text('Distance analysis')
 axes[1, 1].imshow(img_denoise, cmap = 'gray')
+distance_vis(keypoints_coords, index_matrix=index_matrix, axes=axes[1, 1])
 for i, coord in enumerate(keypoints_coords):
-    distance_vis(keypoints_coords, index_matrix=index_matrix, axes=axes[1, 1])
     axes[1, 1].plot(coord[0], coord[1], 'bo')
 
 plt.show()
