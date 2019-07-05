@@ -1,16 +1,20 @@
+import matplotlib
 import matplotlib.pyplot as plt
 import cv2
 import numpy as np
+
 
 
 # Try opencv2.simpleblobdetector first
 
 # Read image
 img = cv2.imread("../images/particles1.jpg", 0)
-# img = cv2.imread("../images/particles.jpg", 0)
-# Denoising
+# img = cv2.imread("../images/40000.jpeg", 0)
 
-img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21)
+# Denoising
+img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21) # Mean denoising
+# img_denoise = cv2.medianBlur(img, 7) # Median filter
+
 # plt.subplot(121)
 # plt.imshow(img)
 # plt.subplot(122)
@@ -21,15 +25,15 @@ img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21)
 params = cv2.SimpleBlobDetector_Params()
 
 # Change thresholds
-params.minThreshold = 10
-params.maxThreshold = 200
+params.minThreshold = 0
+params.maxThreshold = 255
 
 # Set edge gradient
 # params.thresholdStep = 5
 
 # Filter by Area.
-# params.filterByArea = True
-# params.minArea = 10
+params.filterByArea = True
+params.minArea = 1
 # params.maxArea = 100
 
 # Filter by Color
@@ -41,6 +45,8 @@ detector = cv2.SimpleBlobDetector_create(params)
 
 # Detect blobs.
 keypoints = detector.detect(img_denoise)
+keypoints_coords = [keypoint.pt for keypoint in keypoints]
+keypoints_radius = [keypoints.size for keypoints in keypoints]
 
 # Draw detected blobs as red circles.
 # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
@@ -48,12 +54,13 @@ im_with_keypoints = cv2.drawKeypoints(img_denoise, keypoints, np.array([]), (0, 
                                       cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
 
 # Show keypoints
-plt.subplot(131)
-plt.imshow(img, cmap = 'gray')
-plt.subplot(132)
-plt.imshow(img_denoise, cmap = 'gray')
-plt.subplot(133)
-plt.imshow(im_with_keypoints)
+fig, axes = plt.subplots(2, 2)
+axes[0, 0].imshow(img, cmap = 'gray')
+axes[0, 1].imshow(img_denoise, cmap = 'gray')
+axes[1, 0].imshow(im_with_keypoints)
+axes[1, 1].imshow(img_denoise, cmap = 'gray')
+for i, coord in enumerate(keypoints_coords):
+    axes[1, 1].plot(coord[0], coord[1], 'bx')
 
 plt.show()
 
