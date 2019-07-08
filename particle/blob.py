@@ -55,7 +55,7 @@ def particle_blob_detection(img, min_area=5):
 
 if __name__ == '__main__':
     # Read image
-    img = cv2.imread("../images/particles1.jpg", 0)
+    img = cv2.imread("../images/particles.jpg", 0)
 
     # Denoising
     img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21) # Mean denoising   
@@ -81,7 +81,7 @@ if __name__ == '__main__':
     # print(n)
     # print(np.shape(distances))
     # print(np.shape([distance for distance in np.ravel(distances) if distance != 0]))
-    cutoff_distance = 60
+    cutoff_distance = 35
     distance_filter = (distances <= cutoff_distance)
     index_matrix = distance_filter * np.tril(np.ones((n, n), dtype=int), -1)
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     ax3.title.set_text('Blob detection')
     ax3.imshow(im_with_keypoints)
 
-    ax4.title.set_text('Distance analysis')
+    ax4.title.set_text('Distance analysis (cutoff = {})'.format(cutoff_distance))
     ax4.imshow(img_denoise, cmap = 'gray')
     distance_vis(keypoints_coords, index_matrix=index_matrix, axes=ax4)
     for i, coord in enumerate(keypoints_coords):
