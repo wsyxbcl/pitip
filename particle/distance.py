@@ -6,8 +6,8 @@ _no_value = object()
 def distance_calc(points):
     """
     Calculate the distance between every 2 points in given array
-    (numpy array that contains n coordinates of points)
-    and return a matrix containiing mutual distances 
+    (n*2 numpy array that contains n coordinates of points)
+    and return a n*n matrix containiing mutual distances 
     """
     n = np.shape(points)[0] # number of points
     distance = np.empty((n, n))
