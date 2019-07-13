@@ -82,8 +82,8 @@ if __name__ == '__main__':
     # print(np.shape(distances))
     # print(np.shape([distance for distance in np.ravel(distances) if distance != 0]))
     cutoff_distance = 35
-    distance_filter = (distances <= cutoff_distance)
-    index_matrix = distance_filter * np.tril(np.ones((n, n), dtype=int), -1)
+    distance_filter_matrix = (distances <= cutoff_distance)
+    index_matrix = distance_filter_matrix * np.tril(np.ones((n, n), dtype=int), -1)
 
     # Draw detected blobs as red circles.
     # cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS ensures the size of the circle corresponds to the size of blob
