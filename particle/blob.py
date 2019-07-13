@@ -49,7 +49,7 @@ def particle_blob_detection(img, min_area=5):
     detector = cv2.SimpleBlobDetector_create(params)
 
     # Detect blobs.
-    keypoints = detector.detect(img_denoise)
+    keypoints = detector.detect(img)
     return keypoints
 
 
