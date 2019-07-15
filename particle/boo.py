@@ -29,7 +29,8 @@ def phi_6(points, cutoff_distance):
             bond_jk = points[k_idx] - points[j_idc] # n_k * 2 matrix
             theta_jk = np.arctan2(bond_jk[:, 1], bond_jk[:, 0])
             phi_6_j.append(np.average(np.exp(6j*theta_jk)))
-    # psi_6 = np.average(phi_6_j)
+    phi_6_j = np.absolute(phi_6_j)
+    psi_6 = np.average(phi_6_j)
     return phi_6_j
 
 if __name__ == '__main__':
