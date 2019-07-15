@@ -35,7 +35,9 @@ def phi_6(points, cutoff_distance):
 
 if __name__ == '__main__':
     # Test case
-    particles = np.random.rand(30, 2)
-    # plt.scatter(particles[:, 0], particles[:, 1])
-    # plt.show()
-    phi_6_j = phi_6(particles, cutoff_distance=0.1)
+    np.random.seed(0)
+    particles = np.random.rand(77, 2)
+    phi_6_j = phi_6(particles, cutoff_distance=0.05)
+    plt.scatter(particles[:, 0], particles[:, 1], c=phi_6_j, cmap='plasma')
+    plt.colorbar()
+    plt.show()
