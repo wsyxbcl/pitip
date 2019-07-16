@@ -38,7 +38,7 @@ for filename, subdir in walker(working_directory, pattern):
     imgname = os.path.splitext(filename)[0]
     plt.savefig(saving_directory.joinpath(Path(filename).stem+'_blob.png'), 
                 dpi=300)
-
+    plt.clf()
     distances = distance_calc(keypoints_coords)
     np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist.csv'), distances,
                delimiter=',',
