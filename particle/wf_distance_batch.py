@@ -89,8 +89,8 @@ def find_best_blob(img):
         cv2.imshow('image', img_show)
 
     cv2.destroyAllWindows()
-    return (nlmean_denoise, h_mean, tsize_mean, ssize_mean, ksize_median, 
-            median_denoise, ksize_median, min_thold, max_thold, step, min_area)
+    return (nlmean_denoise, h_mean, tsize_mean, ssize_mean, median_denoise, 
+            ksize_median, min_thold, max_thold, step, min_area)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -114,8 +114,8 @@ if __name__ == '__main__':
         # Use first image to set parameters
         if not find_param:
             print("Setting parameters for denoise and blob detection.")
-            (nlmean_denoise, h_mean, tsize_mean, ssize_mean, ksize_median, 
-             median_denoise,ksize_median, 
+            (nlmean_denoise, h_mean, tsize_mean, ssize_mean, 
+             median_denoise, ksize_median, 
              min_thold, max_thold, step, min_area) = find_best_blob(img)
             find_param = 1
             print("Parameters all set")
