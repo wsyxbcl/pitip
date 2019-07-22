@@ -117,6 +117,7 @@ if __name__ == '__main__':
             (nlmean_denoise, h_mean, tsize_mean, ssize_mean, 
              median_denoise, ksize_median, 
              min_thold, max_thold, step, min_area) = find_best_blob(img)
+            #TODO saving & reading(maybe) parameters
             find_param = 1
             print("Parameters all set")
             print()
@@ -131,6 +132,7 @@ if __name__ == '__main__':
             img_denoised = cv2.fastNlMeansDenoising(img, None, h_mean, tsize_mean, ssize_mean)
         else:
             img_denoised = img
+
         # Blob detection
         keypoints = particle_blob_detection(img_denoised, min_area=min_area, 
                                             min_threshold=min_thold, max_threshold=max_thold,
@@ -138,6 +140,7 @@ if __name__ == '__main__':
         keypoints_coords = np.array([keypoint.pt for keypoint in keypoints])
         im_with_keypoints = cv2.drawKeypoints(img_denoised, keypoints, np.array([]), (0, 0, 255),
                                             cv2.DRAW_MATCHES_FLAGS_DRAW_RICH_KEYPOINTS)
+
         # Plot & save figure
         fig = plt.figure(tight_layout=True)
         gs = matplotlib.gridspec.GridSpec(1, 2)
@@ -152,7 +155,16 @@ if __name__ == '__main__':
                     dpi=300)
         plt.clf()
         distances = distance_calc(keypoints_coords)
+
         # Saving distance matrix
-        np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist.csv'), distances,
+        np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist_mat.csv'), distances,
                 delimiter=',',
                 fmt='%.3e')
+
+        # Saving distance array
+        n = np.shape(keypoints_coords)[0]
+        distances_rmdup = distances * np.tril(np.ones((n, n), dtype=int), -1)
+        distances_array = np.ravel([distance for distance in np.ravel(distances_rmdup) if distance != 0])
+        np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist.csv'), distances_array,
+                   delimiter=',',
+                   fmt='%.3e')
