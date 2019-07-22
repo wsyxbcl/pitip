@@ -20,7 +20,7 @@ if not os.path.exists(saving_directory):
 pattern = re.compile('.*?jpg$')
 for filename, subdir in walker(working_directory, pattern):
     print("Openning "+filename)
-    img = cv2.imread("../images/particles.jpg", 0)
+    img = cv2.imread(str(Path(subdir).joinpath(filename)), 0)
     img_denoise = cv2.fastNlMeansDenoising(img, None, 30, 7, 21)
     keypoints = particle_blob_detection(img_denoise)
     keypoints_coords = np.array([keypoint.pt for keypoint in keypoints])
