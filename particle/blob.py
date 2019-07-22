@@ -22,7 +22,7 @@ from distance import *
 #     plt.xticks([]),plt.yticks([])
 # plt.show()
 
-def particle_blob_detection(img, min_area=5):
+def particle_blob_detection(img, min_area=5, min_threshold=10, max_threshold=200, step_threshold=5):
     """
     Using cv2.SimpleBlobDector for blob detection
     """
@@ -30,11 +30,11 @@ def particle_blob_detection(img, min_area=5):
     params = cv2.SimpleBlobDetector_Params()
 
     # Change thresholds
-    params.minThreshold = 10
-    params.maxThreshold = 255
+    params.minThreshold = min_threshold
+    params.maxThreshold = max_threshold
 
     # Set edge gradient
-    params.thresholdStep = 5
+    params.thresholdStep = step_threshold
 
     # Filter by Area.
     params.filterByArea = True
