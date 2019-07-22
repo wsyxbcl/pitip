@@ -5,9 +5,10 @@ sys.path.insert(0, '../contour')
 
 from blob import particle_blob_detection
 
-def find_best_blob(img)
+def find_best_blob(img):
     """
-    Find proper parameter for denoising and blob detection.
+    Interactivly find proper parameter for denoising and blob detection.
+    In order to make blob.py clean, this function is defined in the workflow script. 
     """
     # Create a black image, a window
     # img = cv2.imread("../images/particles.jpg", 0)
@@ -33,6 +34,8 @@ def find_best_blob(img)
     cv2.createTrackbar('min_area', 'image', 5, 100, lambda x: None)
     # cv2.imshow('image', img)
 
+    print("ATTENTION: After parameter setting, press ESC to quit the openCV window.")
+    print("(Do not click the close button of the window)")
     # Choose denoising method
     while(1):
         k = cv2.waitKey(1) & 0xFF
@@ -40,6 +43,13 @@ def find_best_blob(img)
             break
         # denoise
         nlmean_denoise = cv2.getTrackbarPos('NlMean', 'image')
+        try:
+            if nlmean_denoise == -1:
+                raise ValueError('Getting -1 from Trackbar')
+        except ValueError:
+            print("Use ESC to finish the function!")
+            cv2.destroyAllWindows()
+            raise
         median_denoise = cv2.getTrackbarPos('Median', 'image')
         h_mean = cv2.getTrackbarPos('h', 'image')
         tsize_mean = 2 * cv2.getTrackbarPos('tws', 'image') + 1
