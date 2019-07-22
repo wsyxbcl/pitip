@@ -45,7 +45,7 @@ def find_best_blob(img):
         k = cv2.waitKey(1) & 0xFF
         if k == 27:
             break
-        # denoise
+        # Get parameters from trackbars
         nlmean_denoise = cv2.getTrackbarPos('NlMean', 'image')
         try:
             if nlmean_denoise == -1:
@@ -59,6 +59,11 @@ def find_best_blob(img):
         tsize_mean = 2 * cv2.getTrackbarPos('tws', 'image') + 1
         ssize_mean = 2 * cv2.getTrackbarPos('sws', 'image') + 1
         ksize_median = 2 * cv2.getTrackbarPos('k', 'image') + 1
+        min_thold = cv2.getTrackbarPos('min_thold', 'image')
+        max_thold = cv2.getTrackbarPos('max_thold', 'image')
+        step = cv2.getTrackbarPos('step', 'image')
+        min_area =  cv2.getTrackbarPos('min_area', 'image')
+
         if nlmean_denoise and median_denoise:
             img_denoised_mean = cv2.fastNlMeansDenoising(img, None, h_mean, tsize_mean, ssize_mean)
             img_denoised = cv2.medianBlur(img_denoised_mean, ksize_median)
@@ -70,10 +75,6 @@ def find_best_blob(img):
             img_denoised = img
         # blob detection
         if cv2.getTrackbarPos('Blob', 'image'):
-            min_thold = cv2.getTrackbarPos('min_thold', 'image')
-            max_thold = cv2.getTrackbarPos('max_thold', 'image')
-            step = cv2.getTrackbarPos('step', 'image')
-            min_area =  cv2.getTrackbarPos('min_area', 'image')
             keypoints = particle_blob_detection(img_denoised, 
                                                 min_area=min_area, 
                                                 min_threshold=min_thold, 
