@@ -162,9 +162,9 @@ if __name__ == '__main__':
         distances = distance_calc(keypoints_coords)
 
         # Saving distance matrix
-        np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist_mat.csv'), distances,
-                delimiter=',',
-                fmt='%.3e')
+        # np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist_mat.csv'), distances,
+        #         delimiter=',',
+        #         fmt='%.3e')
 
         # Saving distance array
         n = np.shape(keypoints_coords)[0]
