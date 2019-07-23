@@ -93,18 +93,23 @@ def find_best_blob(img):
             ksize_median, min_thold, max_thold, step, min_area)
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument("image_dir", type=Path, 
-                        help="Directory that contains the aimed image")
+    parser = argparse.ArgumentParser(description="Workflow for distance analysis" 
+                                     "(interactive parameter setting -> "
+                                     "denoise -> blob detection -> distance calc) "
+                                     "on all images in aimed directory.")
+    parser.add_argument(dest='image_dir', type=Path, 
+                        help="Directory that contains aimed images")
+    parser.add_argument('-f', '--format', metavar='format', required=True,
+                        dest='format', action='append',
+                        help="Image format to match")
     args = parser.parse_args()
     working_directory = args.image_dir
     saving_directory = working_directory.joinpath('output')
     if not os.path.exists(saving_directory):
         os.makedirs(saving_directory)
-        
-    pattern = re.compile('.*?jpeg$')
+    img_pattern = re.compile('.*?(?:'+'|'.join(args.format)+')$' )
     find_param = 0
-    for filename, subdir in walker(working_directory, pattern):
+    for filename, subdir in walker(working_directory, img_pattern):
         # Ignore images in the output directory
         if Path(subdir) == saving_directory:
             continue
@@ -153,7 +158,7 @@ if __name__ == '__main__':
         imgname = os.path.splitext(filename)[0]
         plt.savefig(saving_directory.joinpath(Path(filename).stem+'_blob.png'), 
                     dpi=300)
-        plt.clf()
+        plt.close()
         distances = distance_calc(keypoints_coords)
 
         # Saving distance matrix
