@@ -35,7 +35,7 @@ def find_best_blob(img):
     cv2.createTrackbar('min_thold', 'image', 10, 255, lambda x: None)
     cv2.createTrackbar('max_thold', 'image', 200, 255, lambda x: None)
     cv2.createTrackbar('step', 'image', 5, 50, lambda x: None)
-    cv2.createTrackbar('min_area', 'image', 5, 100, lambda x: None)
+    cv2.createTrackbar('min_area', 'image', 5, 256, lambda x: None)
     # cv2.imshow('image', img)
 
     print("ATTENTION: After parameter setting, press ESC to quit the openCV window.")
