@@ -34,6 +34,6 @@ if __name__ == '__main__':
     contours, hierarchy = cv2.findContours(alpha_channel, cv2.RETR_TREE, 
                                            cv2.CHAIN_APPROX_SIMPLE)
     mask = mask_from_contours(im, contours)
-    mask_eroded = erode_mask(mask, kernel_size=3, num_iterations=27)
+    mask_eroded = erode_mask(mask, kernel_size=3, num_iterations=8)
     contour_removed = cv2.bitwise_and(im, im, mask=mask_eroded)
     cv2.imwrite('../images/contour_removal.png', contour_removed)
