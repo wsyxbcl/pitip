@@ -102,6 +102,8 @@ if __name__ == '__main__':
     parser.add_argument('-f', '--format', metavar='format', required=True,
                         dest='format', action='append',
                         help="Image format to match")
+    parser.add_argument('-t', dest='two_particle', action='store_true',
+                        help='two-particle mode')
     args = parser.parse_args()
     working_directory = args.image_dir
     saving_directory = working_directory.joinpath('output')
@@ -109,6 +111,10 @@ if __name__ == '__main__':
         os.makedirs(saving_directory)
     img_pattern = re.compile('.*?(?:'+'|'.join(args.format)+')$' )
     find_param = 0
+    if args.two_particle:
+        # for two-particle system
+        two_particle_info = []
+
     for filename, subdir in walker(working_directory, img_pattern):
         # Ignore images in the output directory
         if Path(subdir) == saving_directory:
@@ -166,10 +172,24 @@ if __name__ == '__main__':
         #         delimiter=',',
         #         fmt='%.3e')
 
-        # Saving distance array
+
         n = np.shape(keypoints_coords)[0]
         distances_rmdup = distances * np.tril(np.ones((n, n), dtype=int), -1)
         distances_array = np.ravel([distance for distance in np.ravel(distances_rmdup) if distance != 0])
-        np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist.csv'), distances_array,
-                   delimiter=',',
-                   fmt='%.3e')
+        if args.two_particle:
+            if n != 2:
+                print("Exception: {} particles detected in {}".format(n, filename))
+                continue
+            x1, y1 = keypoints_coords[0, :]
+            x2, y2 = keypoints_coords[1, :]
+            two_particle_info.append([Path(filename).stem, distances_array, 
+                                      x1, y1, x2, y2])
+        else:
+            # Saving distance array
+            np.savetxt(saving_directory.joinpath(Path(filename).stem+'_dist.csv'), 
+                       distances_array, delimiter=',', fmt='%.3e')
+    if args.two_particle:
+        np.savetxt(saving_directory.joinpath('two_particle_info.csv'), 
+                   np.array(two_particle_info), delimiter=',',
+                   fmt=",".join(["%s"] + ["%.3e"]*5), comments=''
+                   header="filename,distance,x1,y1,x2,y2")
