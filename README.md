@@ -13,7 +13,7 @@ A Demo:
 <img src="/images/futaba_rio_cv.png" height="295">
 
 Note that active contour detection can be slow on high resolution pictures, 
-one may compress the picture to accelerate the detection. Superpixel algorithium might be useful in such case (TODO).
+one may compress the picture to accelerate the detection. Superpixel algorithm might be useful in such case (TODO).
 
 ## Particle analysis
 
